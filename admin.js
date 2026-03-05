@@ -23,33 +23,29 @@ async function fetchServerSettings() {
     }
 }
 
-// --- 3. Security Check (Anti-Reload Password Fix) ---
+// --- 3. Security Check ---
 window.onload = async function() {
-    // Check karein kya isi session mein pehle login kiya tha?
     const alreadyLoggedIn = sessionStorage.getItem('isGhabaAdmin');
-    
     const serverProducts = await fetchServerSettings();
     const latestPass = localStorage.getItem('adminPassword') || "admin123";
 
     if (alreadyLoggedIn === "true") {
-        // Agar pehle se login hai toh seedha andar bhejo
         document.body.style.display = "block";
         displayAdminProducts(serverProducts);
     } else {
-        // Agar naya session hai toh password pucho
         let userEntry = prompt("Enter Admin Password:");
         if (userEntry === latestPass) {
-            sessionStorage.setItem('isGhabaAdmin', "true"); // Session mein login save karo
+            sessionStorage.setItem('isGhabaAdmin', "true");
             document.body.style.display = "block";
             displayAdminProducts(serverProducts);
         } else {
-            alert("Access Denied! Galat Password.");
+            alert("Access Denied!");
             window.location.href = "index.html";
         }
     }
 };
 
-// --- 4. Server Update Logic (No Page Reload) ---
+// --- 4. Server Update Logic ---
 async function syncSettingsToServer(newUpi, newPass) {
     const data = {
         type: "updateSettings",
@@ -57,7 +53,7 @@ async function syncSettingsToServer(newUpi, newPass) {
         password: newPass
     };
 
-    if(typeof showLoader === "function") showLoader(true);
+    if(typeof showLoader === "function") showLoader(true, "Updating Server...");
 
     try {
         await fetch(GOOGLE_SHEET_URL, {
@@ -67,8 +63,6 @@ async function syncSettingsToServer(newUpi, newPass) {
         });
 
         alert("Server updated successfully! ✅");
-        
-        // Refresh ki jagah sirf data reload karo
         const updatedProducts = await fetchServerSettings();
         displayAdminProducts(updatedProducts);
     } catch (error) {
@@ -91,12 +85,12 @@ function updatePass() {
 }
 
 // --- 5. Photo Upload (ImgBB) ---
-async function autoUrl(input, slot) {
+async function processMedia(input, urlInputId, previewId) {
     const file = input.files[0];
     if (!file) return;
 
-    const previewImg = document.getElementById(`pre${slot}`);
-    const urlInput = document.getElementById(`url${slot}`);
+    const previewImg = document.getElementById(previewId);
+    const urlInput = document.getElementById(urlInputId);
     const btnSpan = input.previousElementSibling; 
 
     if (btnSpan) btnSpan.innerText = "Wait...";
@@ -122,33 +116,33 @@ async function autoUrl(input, slot) {
         }
     } catch (error) {
         alert("Photo upload fail!");
+        if (btnSpan) btnSpan.innerText = "Gallery";
+        if (previewImg) previewImg.style.opacity = "1";
     }
 }
 
-// --- 6. Save Product (No Page Reload Fix) ---
+// --- 6. Save Product (With 7 Photos & No Video) ---
 async function saveProduct() {
     const name = document.getElementById('pName').value.trim();
     const price = document.getElementById('pPrice').value.trim();
     const category = document.getElementById('pCategory').value;
-    const video = document.getElementById('pVideo').value.trim();
 
-    const gallery = [
-        document.getElementById('url1').value,
-        document.getElementById('url2').value,
-        document.getElementById('url3').value,
-        document.getElementById('url4').value,
-        document.getElementById('url5').value
-    ].filter(url => url.trim() !== "");
+    // Collect all 7 photo URLs
+    const gallery = [];
+    for(let i=1; i<=7; i++) {
+        const val = document.getElementById(`url${i}`).value.trim();
+        if(val) gallery.push(val);
+    }
 
     if (!name || !price || gallery.length === 0) {
-        alert("Details bhariye!");
+        alert("Please fill name, price and at least one image!");
         return;
     }
 
     const submitBtn = document.getElementById('publishBtn');
     submitBtn.innerText = "PUBLISHING...";
     submitBtn.disabled = true;
-    if(typeof showLoader === "function") showLoader(true);
+    if(typeof showLoader === "function") showLoader(true, "Publishing Product...");
 
     const newProduct = {
         id: Date.now(),
@@ -156,8 +150,8 @@ async function saveProduct() {
         price: price,
         category: category,
         mainImg: gallery[0],
-        gallery: gallery, 
-        video: video
+        gallery: gallery
+        // Video field removed as per request
     };
 
     try {
@@ -169,16 +163,18 @@ async function saveProduct() {
 
         alert("Product Published! ✅");
 
-        // Form ko khali karo (Refesh ki zaroorat nahi)
+        // Clear Form
         document.getElementById('pName').value = "";
         document.getElementById('pPrice').value = "";
-        document.getElementById('pVideo').value = "";
-        for(let i=1; i<=5; i++){
+        for(let i=1; i<=7; i++){
             document.getElementById(`url${i}`).value = "";
             document.getElementById(`pre${i}`).src = "https://via.placeholder.com/50";
+            // Reset button text
+            const inputs = document.querySelectorAll('.btn-file');
+            inputs.forEach(span => span.innerText = "Gallery");
         }
 
-        // List update karo bina refresh ke
+        // Update Inventory List
         const freshProducts = await fetchServerSettings();
         displayAdminProducts(freshProducts);
 
@@ -206,7 +202,6 @@ function displayAdminProducts(products) {
 }
 
 function logout() { 
-    localStorage.clear(); 
     sessionStorage.clear();
     window.location.href = "index.html"; 
 }

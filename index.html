@@ -7,157 +7,9 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://img.freepik.com/premium-vector/shopping-logo-vector-icon_636116-200.jpg?semt=ais_hybrid&w=740&q=80"> 
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <style>
-        /* Modern Circular Categories - Optimized Size */
-        .category-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px; 
-            padding: 25px 10px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-        .cat-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            min-width: 90px; 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .cat-card:active { transform: scale(0.9); }
-        
-        .cat-img-box {
-            width: 80px; 
-            height: 80px; 
-            border-radius: 50%;
-            border: 3px solid #fce4ec;
-            padding: 5px;
-            margin-bottom: 8px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        .cat-img-box img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .cat-card p {
-            font-size: 13px; 
-            font-weight: 600;
-            color: #444;
-            margin: 0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .active-cat .cat-img-box { 
-            border-color: #d4af37; 
-            box-shadow: 0 0 20px rgba(212,175,55,0.5);
-            transform: translateY(-5px);
-        }
-        .active-cat p { color: #d4af37; }
-
-        /* Home Button Style in Header */
-        .home-trigger {
-            margin-right: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            color: #1a1a1a;
-        }
-        .home-trigger i { font-size: 18px; }
-        .home-trigger span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
-
-        /* Offer Tags & Pricing */
-        .p-offer-tag {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #e74c3c;
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 4px;
-            z-index: 2;
-        }
-        .p-price-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-        .p-price { font-size: 17px; font-weight: 700; color: #1a1a1a; }
-        .p-old-price { font-size: 13px; color: #999; text-decoration: line-through; }
-        .p-discount-txt { color: #e74c3c; font-size: 12px; font-weight: 700; }
-
-        /* --- WHATSAPP FIXED POSITIONING --- */
-        .wa-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            pointer-events: none; /* Allows clicking through the empty container space */
-        }
-        .wa-msg-pop {
-            background: white;
-            color: #333;
-            padding: 8px 15px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 10px;
-            border: 1px solid #eee;
-            position: relative;
-            animation: bounceIn 1s ease;
-            white-space: nowrap;
-            pointer-events: auto;
-        }
-        /* Little tail for the message bubble */
-        .wa-msg-pop::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            right: 20px;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid white;
-        }
-        .whatsapp-modern {
-            background: #25d366;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 30px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            pointer-events: auto;
-            transition: transform 0.3s ease;
-        }
-        .whatsapp-modern:hover { transform: scale(1.1); }
-
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 480px) {
-            .wa-msg-pop { font-size: 12px; padding: 6px 12px; }
-            .whatsapp-modern { width: 50px; height: 50px; font-size: 26px; }
-        }
-    </style>
 </head>
 <body>
 
@@ -195,7 +47,7 @@
 
         <div class="search-overlay" id="searchBar">
             <div class="search-bar-inner">
-                <input type="text" id="searchInput" placeholder="Saree ya Kurti search karein..." oninput="searchProduct()">
+                <input type="text" id="searchInput" placeholder="Search product..." oninput="searchProduct()">
                 <i class="fa-solid fa-xmark" onclick="toggleSearch()" style="cursor:pointer;"></i>
             </div>
         </div>
@@ -223,6 +75,12 @@
                 </div>
                 <p>Kurtis & Dress</p>
             </div>
+            <div class="cat-card" id="cat-GIFT" onclick="filterProducts('GIFT')">
+                <div class="cat-img-box">
+                    <img src="https://www.happygifts.in/storage/bundles/WDBAVaQf19geEwAdktWBjVC4Y3Xb718Q1vjFBfAy.webp" alt="Gifts">
+                </div>
+                <p>Exclusive Gifts</p>
+            </div>
         </div>
     </section>
 
@@ -239,7 +97,7 @@
     </section>
 
     <div class="wa-container">
-        <div class="wa-msg-pop">Al  Collection chat</div>
+        <div class="wa-msg-pop">Al Collection chat</div>
         <a href="https://wa.me/919511567395?text=I'm interested in your premium collection." 
            class="whatsapp-modern" target="_blank">
             <i class="fa-brands fa-whatsapp"></i>
@@ -316,10 +174,7 @@
             let displayTitle;
 
             if (category === 'HOME') {
-                filtered = allProducts.filter(p => {
-                    const pCat = p.category ? p.category.toUpperCase() : "";
-                    return pCat === 'SAREE' || pCat === 'KURTIS' || pCat.includes('DRESS');
-                });
+                filtered = allProducts;
                 displayTitle = "Premium Collection";
             } else {
                 filtered = allProducts.filter(p => {
@@ -327,9 +182,15 @@
                     if (category === 'KURTIS') {
                         return pCat === 'KURTIS' || pCat.includes('DRESS');
                     }
+                    if (category === 'GIFT') {
+                        return pCat === 'GIFT' || pCat.includes('GIFT');
+                    }
                     return pCat === category;
                 });
-                displayTitle = category === 'SAREE' ? 'Premium Sarees' : 'Kurtis & Dresses';
+
+                if(category === 'SAREE') displayTitle = 'Premium Sarees';
+                else if(category === 'KURTIS') displayTitle = 'Kurtis & Dresses';
+                else if(category === 'GIFT') displayTitle = 'Exclusive Gifts';
             }
             
             document.getElementById('feedTitle').innerText = displayTitle;
