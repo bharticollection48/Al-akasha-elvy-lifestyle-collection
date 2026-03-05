@@ -38,7 +38,6 @@
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
-        /* Trust Badges */
         .trust-row { display: flex; justify-content: space-between; margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 15px; }
         .trust-item { text-align: center; font-size: 10px; font-weight: 600; color: #666; }
         .trust-item i { display: block; font-size: 18px; color: var(--dark); margin-bottom: 5px; }
@@ -48,7 +47,6 @@
         .btn-size { border: 1.5px solid #eee; padding: 10px 20px; border-radius: 10px; background: white; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 14px; }
         .btn-size.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(243, 4, 124, 0.2); }
 
-        /* WhatsApp Button */
         #waFloatingBtn { position: fixed; bottom: 95px; right: 20px; background: var(--wa-green); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); z-index: 999; text-decoration: none; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
@@ -70,7 +68,7 @@
     <div id="loader"><div class="spinner"></div><p style="margin-top:20px; font-weight:600; color:var(--primary); letter-spacing:1px;">PREMIUM COLLECTION...</p></div>
 
     <header>
-        <div class="share-btn" onclick="history.back()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="share-btn" onclick="goBack()"><i class="fa-solid fa-chevron-left"></i></div>
         <div style="text-align: center;">
             <div style="font-size: 15px; font-weight: 800; color: var(--dark); letter-spacing: 1.5px; text-transform: uppercase;">Al Akasha Elvy</div>
         </div>
@@ -156,6 +154,27 @@
         let currentProduct = null;
         let selectedSize = "";
 
+        // --- SMART NAVIGATION LOGIC START ---
+        
+        // डमी स्टेट पुश करें ताकि सिस्टम बैक बटन को ट्रैक किया जा सके
+        window.history.pushState({ path: window.location.href }, '', window.location.href);
+
+        window.onpopstate = function(event) {
+            // जब यूजर फोन का बैक बटन दबाए
+            goBack();
+        };
+
+        function goBack() {
+            // अगर यूजर किसी बाहरी लिंक (WhatsApp आदि) से आया है, तो हिस्ट्री में पिछला पेज आपकी साइट का नहीं होगा
+            if (document.referrer === "" || document.referrer.indexOf(window.location.host) === -1) {
+                window.location.href = 'index.html'; // होम पेज पर भेजें
+            } else {
+                window.history.back(); // सामान्य रूप से पीछे जाएँ
+            }
+        }
+        
+        // --- SMART NAVIGATION LOGIC END ---
+
         async function init() {
             try {
                 const response = await fetch(SCRIPT_URL + "?t=" + Date.now());
@@ -207,7 +226,6 @@
                 document.getElementById('thumbRow').appendChild(thumb);
             });
 
-            // Size Logic
             const cat = (product.category || "").toUpperCase();
             if(['SAREE', 'KURTIS', 'KURTIS & DRESS', 'WESTERN'].includes(cat)) {
                 document.getElementById('sizeArea').style.display = 'block';
@@ -220,13 +238,12 @@
                         document.querySelectorAll('.btn-size').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         selectedSize = sz;
-                        updateWhatsAppLink(product); // Size update message
+                        updateWhatsAppLink(product);
                     };
                     document.getElementById('sizeOptions').appendChild(btn);
                 });
             }
 
-            // Related Items
             const similar = allProducts.filter(p => p.category === product.category && p.id != product.id).slice(0, 4);
             similar.forEach(sp => {
                 const item = document.createElement('div');
@@ -251,7 +268,7 @@
             const waBtn = document.getElementById('waFloatingBtn');
             const sizeInfo = selectedSize ? `\n📏 Size: ${selectedSize}` : "";
             const text = encodeURIComponent(`नमस्ते Al Akasha Elvy! 👋\n\nमुझे यह प्रोडक्ट खरीदना है:\n🛍️ नाम: ${product.name}\n🆔 ID: ${product.id}\n💰 कीमत: ₹${product.price}${sizeInfo}\n\nकृपया उपलब्धता बताएं।`);
-            waBtn.href = `https://wa.me/918233143672?text=${text}`;
+            waBtn.href = `https://wa.me/919511567395?text=${text}`;
         }
 
         function shareProduct() {
